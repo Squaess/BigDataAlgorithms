@@ -1,6 +1,7 @@
 # Problem1 
 
 This problem is a quick introduction to scala.
+All resources can be find under ``src/main/resources``.
 It shows how to read from file, make some operations on the text
 and save the results to a file. From this file we are able to create
 such a beautifull pictures, using
