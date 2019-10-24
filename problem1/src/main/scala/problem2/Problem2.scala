@@ -5,12 +5,18 @@ import scala.io.Codec
 import stopwords.StopWords.stopwords_pl
 
 object Problem2 extends App {
-    val documents:Array[String] = Source.fromResource("book.txt")(Codec("UTF-8"))
+    val documents:Array[Array[String]] = Source.fromResource("book.txt")(Codec("UTF-8"))
       .getLines
       .mkString
       .toLowerCase
       .replaceAll(",|\\.|!|\\?", " ")
       .split("rozdział")
       .drop(1)
-    println(documents.head)
+      .map(_
+        .strip
+        .split("\\s+")
+        .filterNot(stopwords_pl.contains(_))
+      )
+
+    documents.head.take(10).foreach(println)
 }
