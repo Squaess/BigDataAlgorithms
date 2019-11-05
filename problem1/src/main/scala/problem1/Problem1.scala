@@ -1,12 +1,24 @@
 package problem1
 
-import java.io.{FileWriter, PrintWriter, File}
-
+import java.io.{PrintWriter, File => JFile}
+import better.files._
+import better.files.Dsl._
 import scala.io.Source
 import scala.io.Codec
 import stopwords.StopWords.stopwords_pl
 
-object Problem1 extends App {
+trait SaveForWordCloud {
+    def saveResult[T:Numeric](fileName:String, list:Seq[(String, T)]):Seq[(String, T)] = {
+        val f:File = (cwd/fileName).createIfNotExists(asDirectory = false, createParents = true).clear()
+        val printWriter = new PrintWriter(new JFile(f.path.toString), "UTF-8")
+        import Numeric.Implicits._
+        list.foreach(x => printWriter.println(s"${x._2.toInt} ${x._1}"))
+        printWriter.close()
+        list
+    }
+}
+
+object Problem1 extends App with SaveForWordCloud {
     val bookArray:Array[String] = Source.fromResource("book.txt")(Codec("UTF-8"))
       .getLines
       .mkString
@@ -24,11 +36,5 @@ object Problem1 extends App {
     saveResult("result_first30.txt", rank.take(30)).foreach(println)
     saveResult("result_except30.txt", rank.drop(30))
 
-    def saveResult(fileName:String, list:Seq[(String, Int)]):Seq[(String, Int)] = {
-        val printWriter = new PrintWriter(new File(fileName), "UTF-8")
-        list.foreach(x => printWriter.println(s"${x._2} ${x._1}"))
-        printWriter.close()
-        list
-    }
 
 }
