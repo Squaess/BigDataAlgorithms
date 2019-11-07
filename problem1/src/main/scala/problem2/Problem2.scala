@@ -5,7 +5,7 @@ import scala.io.Codec
 import stopwords.StopWords.stopwords_pl
 import problem1.SaveForWordCloud
 
-object Problem2 extends App with SaveForWordCloud {
+object Problem2 extends SaveForWordCloud {
     val documents:Array[Array[String]] = Source.fromResource("book.txt")(Codec("UTF-8"))
       .getLines
       .mkString
@@ -36,18 +36,20 @@ object Problem2 extends App with SaveForWordCloud {
         x => x.map(y => (y._1, y._2*inverse.getOrElse(y._1, 0.0)))
           .toSeq.sortWith((x, y) => x._2 > y._2)
     )
-    for (i <- tf_idf.indices) {
+
+    def main(args: Array[String]): Unit = {
+        for (i <- tf_idf.indices) {
+            saveResult(
+                s"problem2/c$i.txt",
+                tf_idf(i).take(100).map( x => (x._1, x._2*10e4))
+            )
+        }
         saveResult(
-            s"problem2/c$i.txt",
-            tf_idf(i).take(100).map( x => (x._1, x._2*10e4))
+            "problem2/all.txt",
+            tf_idf.flatMap(_.toList)
+              .sortWith((x, y) => x._2 > y._2)
+              .map(x => (x._1, x._2 * 10e4))
+              .take(100)
         )
     }
-
-    saveResult(
-        "problem2/all.txt",
-        tf_idf.flatMap(_.toList)
-          .sortWith((x, y) => x._2 > y._2)
-          .map(x => (x._1, x._2 * 10e4))
-          .take(100)
-    )
 }
