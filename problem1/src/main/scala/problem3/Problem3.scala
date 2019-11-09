@@ -36,7 +36,7 @@ object Problem3 {
   )
 
   def main(args: Array[String]): Unit = {
-    var text = scala.io.StdIn.readLine("Provide a word, if want to exit write \":exit\"")
+    var text = scala.io.StdIn.readLine("Provide a word, if want to exit write \":exit\": ")
     while(text != ":exit"){
       println(
         tf_idf.map(x => x.getOrElse(text, 0.0))
