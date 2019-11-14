@@ -29,7 +29,7 @@ object Problem1 extends App with SaveForWordCloud {
 
     val rank:Seq[(String, Int)] = bookArray.map(x => (x, 1))
       .toList.groupBy(x => x._1)
-      .mapValues(x => x.length)
+      .view.mapValues(x => x.length).toMap
       .toSeq.sortWith((x,y) => x._2 > y._2)
 
     saveResult("result_all.txt", rank)

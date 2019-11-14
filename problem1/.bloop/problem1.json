@@ -1,0 +1,141 @@
+{
+    "version" : "1.1.2",
+    "project" : {
+        "name" : "problem1",
+        "directory" : "E:\\Documents\\University\\BigDataAlgorithms\\problem1",
+        "sources" : [
+            "E:\\Documents\\University\\BigDataAlgorithms\\problem1\\src\\main\\scala-2.13",
+            "E:\\Documents\\University\\BigDataAlgorithms\\problem1\\src\\main\\scala",
+            "E:\\Documents\\University\\BigDataAlgorithms\\problem1\\src\\main\\java",
+            "E:\\Documents\\University\\BigDataAlgorithms\\problem1\\target\\scala-2.13\\src_managed\\main"
+        ],
+        "dependencies" : [
+        ],
+        "classpath" : [
+            "C:\\Users\\babar\\.ivy2\\cache\\org.scala-lang\\scala-library\\jars\\scala-library-2.13.1.jar",
+            "C:\\Users\\babar\\.ivy2\\cache\\com.github.pathikrit\\better-files_2.13\\jars\\better-files_2.13-3.8.0.jar"
+        ],
+        "out" : "E:\\Documents\\University\\BigDataAlgorithms\\problem1\\.bloop\\problem1",
+        "classesDir" : "E:\\Documents\\University\\BigDataAlgorithms\\problem1\\.bloop\\problem1\\scala-2.13\\classes",
+        "resources" : [
+            "E:\\Documents\\University\\BigDataAlgorithms\\problem1\\src\\main\\resources",
+            "E:\\Documents\\University\\BigDataAlgorithms\\problem1\\target\\scala-2.13\\resource_managed\\main"
+        ],
+        "scala" : {
+            "organization" : "org.scala-lang",
+            "name" : "scala-compiler",
+            "version" : "2.13.1",
+            "options" : [
+                "-deprecation",
+                "-P:semanticdb:synthetics:on",
+                "-P:semanticdb:failures:warning",
+                "-P:semanticdb:sourceroot:E:\\Documents\\University\\BigDataAlgorithms\\problem1",
+                "-Yrangepos",
+                "-Xplugin-require:semanticdb",
+                "-Xplugin:C:\\Users\\babar\\.ivy2\\cache\\org.scalameta\\semanticdb-scalac_2.13.1\\jars\\semanticdb-scalac_2.13.1-4.2.3.jar"
+            ],
+            "jars" : [
+                "C:\\Users\\babar\\.ivy2\\cache\\org.scala-lang\\scala-compiler\\jars\\scala-compiler-2.13.1.jar",
+                "C:\\Users\\babar\\.ivy2\\cache\\org.scala-lang\\scala-library\\jars\\scala-library-2.13.1.jar",
+                "C:\\Users\\babar\\.ivy2\\cache\\org.scala-lang\\scala-reflect\\jars\\scala-reflect-2.13.1.jar",
+                "C:\\Users\\babar\\.ivy2\\cache\\jline\\jline\\jars\\jline-2.14.6.jar",
+                "C:\\Users\\babar\\.ivy2\\cache\\org.fusesource.jansi\\jansi\\jars\\jansi-1.12.jar"
+            ],
+            "setup" : {
+                "order" : "mixed",
+                "addLibraryToBootClasspath" : true,
+                "addCompilerToClasspath" : false,
+                "addExtraJarsToClasspath" : false,
+                "manageBootClasspath" : true,
+                "filterLibraryFromClasspath" : true
+            }
+        },
+        "java" : {
+            "options" : [
+            ]
+        },
+        "test" : {
+            "frameworks" : [
+                {
+                    "names" : [
+                        "org.scalacheck.ScalaCheckFramework"
+                    ]
+                },
+                {
+                    "names" : [
+                        "org.specs2.runner.Specs2Framework",
+                        "org.specs2.runner.SpecsFramework"
+                    ]
+                },
+                {
+                    "names" : [
+                        "org.specs.runner.SpecsFramework"
+                    ]
+                },
+                {
+                    "names" : [
+                        "org.scalatest.tools.Framework",
+                        "org.scalatest.tools.ScalaTestFramework"
+                    ]
+                },
+                {
+                    "names" : [
+                        "com.novocode.junit.JUnitFramework"
+                    ]
+                }
+            ],
+            "options" : {
+                "excludes" : [
+                ],
+                "arguments" : [
+                ]
+            }
+        },
+        "platform" : {
+            "name" : "jvm",
+            "config" : {
+                "home" : "C:\\Program Files\\Java\\jdk-11.0.3",
+                "options" : [
+                ]
+            },
+            "mainClass" : [
+            ]
+        },
+        "resolution" : {
+            "modules" : [
+                {
+                    "organization" : "org.scala-lang",
+                    "name" : "scala-library",
+                    "version" : "2.13.1",
+                    "artifacts" : [
+                        {
+                            "name" : "scala-library",
+                            "path" : "C:\\Users\\babar\\.ivy2\\cache\\org.scala-lang\\scala-library\\jars\\scala-library-2.13.1.jar"
+                        },
+                        {
+                            "name" : "scala-library",
+                            "classifier" : "sources",
+                            "path" : "C:\\Users\\babar\\.ivy2\\cache\\org.scala-lang\\scala-library\\srcs\\scala-library-2.13.1-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization" : "com.github.pathikrit",
+                    "name" : "better-files_2.13",
+                    "version" : "3.8.0",
+                    "artifacts" : [
+                        {
+                            "name" : "better-files_2.13",
+                            "path" : "C:\\Users\\babar\\.ivy2\\cache\\com.github.pathikrit\\better-files_2.13\\jars\\better-files_2.13-3.8.0.jar"
+                        },
+                        {
+                            "name" : "better-files_2.13",
+                            "classifier" : "sources",
+                            "path" : "C:\\Users\\babar\\.ivy2\\cache\\com.github.pathikrit\\better-files_2.13\\srcs\\better-files_2.13-3.8.0-sources.jar"
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}

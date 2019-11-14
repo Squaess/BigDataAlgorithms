@@ -24,13 +24,13 @@ object Problem2 extends SaveForWordCloud {
       .map( x => x._1
         .toList
         .groupBy(x => x)
-        .mapValues(y => y.length/x._2.toDouble)
+        .view.mapValues(y => y.length/x._2.toDouble).toMap
     )
 
     val inverse:Map[String, Double] = frequency
       .flatMap(_.toList)
       .groupBy(x => x._1)
-      .mapValues(x => math.log(documents.length/x.length.toDouble))
+      .view.mapValues(x => math.log(documents.length/x.length.toDouble)).toMap
 
     val tf_idf:Array[Seq[(String, Double)]] = frequency.map(
         x => x.map(y => (y._1, y._2*inverse.getOrElse(y._1, 0.0)))
@@ -48,7 +48,7 @@ object Problem2 extends SaveForWordCloud {
             "problem2/all.txt",
             tf_idf.flatMap(_.toList)
               .sortWith((x, y) => x._2 > y._2)
-              .map(x => (x._1, x._2 * 10e4))
+              .map(x => (x._1, x._2 * 10e4)).toSeq
               .take(100)
         )
     }

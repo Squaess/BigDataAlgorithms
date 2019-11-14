@@ -23,13 +23,13 @@ object Problem3 {
     .map( x => x._1
       .toList
       .groupBy(x => x)
-      .mapValues(y => y.length/x._2.toDouble)
+      .view.mapValues(y => y.length/x._2.toDouble).toMap
     )
 
   val inverse:Map[String, Double] = frequency
     .flatMap(_.toList)
     .groupBy(x => x._1)
-    .mapValues(x => math.log(documents.length/x.length.toDouble))
+    .view.mapValues(x => math.log(documents.length/x.length.toDouble)).toMap
 
   val tf_idf:Array[Map[String, Double]] = frequency.map(
     x => x.map(y => (y._1, y._2*inverse.getOrElse(y._1, 0.0)))
