@@ -76,9 +76,11 @@ class JaccardSimilarity(File1: String, File2: String, k: Int, h: Int){
             x._2.filter( y => indexes contains x._2.indexOf(y)).min
         )
     }
-
+    println("Generating hashes for rows ...")
     val hashes: IndexedSeq[(Int, Seq[Int])] = genHashes(h, rows)
+    println("Get hash ...")
     val minHash1 = getSignature(text1_splited.map(x => rows.indexOf(x)).toSeq, hashes)
+    println("Get hash ...")
     val minHash2 = getSignature(text2_splited.map(x => rows.indexOf(x)).toSeq, hashes)
     val minhashed_value = (minHash1 zip minHash2).filter( x => x._1 == x._2).length / minHash1.length.toDouble
 
