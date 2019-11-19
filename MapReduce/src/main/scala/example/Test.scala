@@ -9,6 +9,7 @@ object Test {
         val spark = SparkSession
             .builder
             .appName("Spark Pi")
+            .config("spark.master", "local")
             .getOrCreate()
         // val spark = new SparkContext(conf)
         val slices = if (args.length > 0) args(0).toInt else 2
