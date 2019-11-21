@@ -23,7 +23,7 @@ object WordCountScala {
             .config("spark.master", "local")
             .getOrCreate()
         val sc = spark.sparkContext
-        val rdd = sc.textFile("/home/silentnauscopy/Documents/University/BigDataAlgorithms/MapReduce/src/main/scala/example/book.txt")
+        val rdd = sc.textFile("/home/silentnauscopy/Documents/University/BigDataAlgorithms/MapReduce/src/main/scala/example/book.txt", 4)
         val stopwords_pl = new StopWords().stopwords_pl
 
         val result = rdd.flatMap(
