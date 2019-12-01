@@ -4,16 +4,7 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkContext._
 import scala.io.Source
 import scala.io.Codec
-
-class StopWords {
-  val stopwords_pl = getStopWords("stopwords_pl.txt")
-
-  private def getStopWords(fileName:String):Array[String] ={
-    Source.fromFile("/home/silentnauscopy/Documents/University/BigDataAlgorithms/MapReduce/src/main/resources/stopwords/".concat(fileName))(Codec("UTF-8"))
-      .mkString
-      .split("\\s+")
-  }
-}
+import example.StopWords
 
 object WordCountScala {
     def go(): Unit = {
