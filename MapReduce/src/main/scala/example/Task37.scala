@@ -11,7 +11,7 @@ object Task37 {
 
         val sc = spark.sparkContext
 
-        val rdd = sc.textFile("test-graph.txt").filter(x => ! x.startsWith("#"))
+        val rdd = sc.textFile("web-Stanford.txt").filter(x => ! x.startsWith("#"))
         val neigh = rdd.flatMap(
             line => {
                 val arr = line.split("\\s+")
@@ -21,26 +21,50 @@ object Task37 {
             acc.union(n)
         })
 
-        val local_cc = neigh.map({
+        val local_cc = neigh.flatMap({
             case (id, xs) => {
-                var nC = 0
-                for ( i <- 0 until (xs.size - 1)){
-                    for (j <- i+1 until xs.size){
-                        // if (neigh.filter(_._1 == xs.toList(j)).first()._2 contains(xs.toList(j))){
-                        // val arr = neigh.filter(_._1 == xs.toList(j)).collect()
-                        // if (neigh.getOrElse(xs(j), List()).contains(xs(i))){
-                        //     nC += 1
-                        // }
-                    }
-                }
-                // var cc = 2 * nC /(xs.length * (xs.length - 1) ).toDouble
-                // if (cc.isNaN) {
-                //     cc = 0
-                // }
-                // (id, xs.length, cc)
-                (id, xs.size)
+                xs.toList.flatMap(x => List((x, (id, xs.filterNot(_ == x)) )))
             }
-        }).take(5).foreach(println)
+        })
+        local_cc.reduceByKey((v1, v2) => v1)
+        // .take(5).foreach(println)
+        // .aggregateByKey((0, List[String](), List[String]()))(
+        //     (acc, second) => {
+        //         val m = acc._2.map(
+        //             node => {
+        //                 if (second._2 contains node) {
+        //                     1
+        //                 } else 0
+        //             }
+        //         ).sum
+        //         (acc._1 + m, second._1::acc._2, second._2.toList++acc._3)
+        //     },
+        //     (acc1, acc2) => {
+        //         val m = acc1._3.map(
+        //             node => {
+        //                 if (acc2._2 contains node) 1
+        //                 else 0
+        //             }
+        //         ).sum
+
+        //         (acc1._1 + m, acc2._2++acc1._2, acc1._3++acc2._3)
+        //     }
+        // )
+
+        // val result = local_cc.map({
+        //     case (node, (m, xs, _)) =>{
+        //         val deg = xs.length
+        //         val cc = {
+        //             if (deg > 1) {
+        //                 (2*m/(xs.length * (xs.length-1)).toDouble)
+        //             } else {
+        //                 0
+        //             }
+        //         }
+        //         (node, cc)
+        //     }
+        // })
+        // result.collect().take(5).foreach(println)
 
         // val average_cc = local_cc.aggregate((0.0,0))(
         //     (acc, value) => (
