@@ -12,6 +12,7 @@ object Task37 {
         val sc = spark.sparkContext
 
         val rdd = sc.textFile("web-Stanford.txt").filter(x => ! x.startsWith("#"))
+        // val rdd = sc.textFile("test-graph.txt").filter(x => ! x.startsWith("#"))
         val neigh = rdd.flatMap(
             line => {
                 val arr = line.split("\\s+")
@@ -19,14 +20,39 @@ object Task37 {
             }
         ).reduceByKey((acc, n) => {
             acc.union(n)
-        })
+        }).collect({case (k, xs) => (k, xs.toList)}).collectAsMap()
 
-        val local_cc = neigh.flatMap({
-            case (id, xs) => {
-                xs.toList.flatMap(x => List((x, (id, xs.filterNot(_ == x)) )))
+        println("Start calculating local cc ...")
+
+        val local_cc = neigh.map(
+            {case (key, xs) => {
+                val n  = 2 * {
+                    if (xs.length == 1) {
+                        0.0
+                    } else {
+                        (for (i <- 0 until (xs.length - 1)) yield (
+                            for (j <- i until xs.length 
+                                    if neigh.getOrElse(xs(j), List()).contains(xs(i))) 
+                                    yield 1).sum).sum / (xs.size * (xs.size-1)).toDouble
+                    }
+                }
+                (key, n)
             }
         })
-        local_cc.reduceByKey((v1, v2) => v1)
+        println("Done calculating local cc.")
+        // .foreach(println)
+
+        println("Start calculating average cc ...")
+        val average_cc = local_cc.foldLeft((0.0, 0))((acc, value) => (acc._1 + value._2, acc._2 + 1))
+        println(s"Average clustering coefficient: ${average_cc._1/average_cc._2}")
+
+
+        // val local_cc = neigh.flatMap({
+        //     case (id, xs) => {
+        //         xs.toList.flatMap(x => List((x, (id, xs.filterNot(_ == x)) )))
+        //     }
+        // })
+        // local_cc.reduceByKey((v1, v2) => v1)
         // .take(5).foreach(println)
         // .aggregateByKey((0, List[String](), List[String]()))(
         //     (acc, second) => {
@@ -64,11 +90,11 @@ object Task37 {
         //         (node, cc)
         //     }
         // })
-        // result.collect().take(5).foreach(println)
+        // result.collect().foreach(println)
 
-        // val average_cc = local_cc.aggregate((0.0,0))(
+        // val average_cc = result.aggregate((0.0,0))(
         //     (acc, value) => (
-        //         acc._1 + value._3,
+        //         acc._1 + value._2,
         //         acc._2 + 1
         //     ),
         //     (acc1, acc2) => (
