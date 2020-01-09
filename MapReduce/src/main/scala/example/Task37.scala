@@ -3,6 +3,8 @@ import org.apache.spark.sql.SparkSession
 
 object Task37 {
     def go(): Unit = {
+
+        // Initialize spark
         val spark = SparkSession
             .builder
             .appName("Task36")
@@ -20,31 +22,49 @@ object Task37 {
             }
         ).reduceByKey((acc, n) => {
             acc.union(n)
-        }).collect({case (k, xs) => (k, xs.toList)}).collectAsMap()
+        })//.collect({case (k, xs) => (k, xs.toList)}).collectAsMap()
+        val local_neighbours = neigh.collectAsMap()
 
         println("Start calculating local cc ...")
+        // neigh.flatMap({
+        //     case (key, v_set) => {
+        //         for ( a <- local_neighbours(key)) yield (key, a)
+        //     }
+        // }).map({
+        //     case (v1, v2) => (v1, local_neighbours(v1).intersect(local_neighbours(v2)).size.toDouble)
+        // }).reduceByKey({case (v1, v2) => v1+v2})
+        // .map({
+        //     case (key, value) => {
+        //         val deg = local_neighbours(key).size
+        //         val cc = if (deg > 1) {
+        //             (value)/(local_neighbours(key).size * (local_neighbours(key).size-1))
+        //         } else 0
+        //         (key, cc)
+        //     }
+        // })
+        // .take(5).foreach(println)
 
-        val local_cc = neigh.map(
-            {case (key, xs) => {
-                val n  = 2 * {
-                    if (xs.length == 1) {
-                        0.0
-                    } else {
-                        (for (i <- 0 until (xs.length - 1)) yield (
-                            for (j <- i until xs.length 
-                                    if neigh.getOrElse(xs(j), List()).contains(xs(i))) 
-                                    yield 1).sum).sum / (xs.size * (xs.size-1)).toDouble
-                    }
-                }
-                (key, n)
-            }
-        })
-        println("Done calculating local cc.")
-        // .foreach(println)
+        // val local_cc = neigh.map(
+        //     {case (key, xs) => {
+        //         val n  = 2 * {
+        //             if (xs.length == 1) {
+        //                 0.0
+        //             } else {
+        //                 (for (i <- 0 until (xs.length - 1)) yield (
+        //                     for (j <- i until xs.length 
+        //                             if neigh.getOrElse(xs(j), List()).contains(xs(i))) 
+        //                             yield 1).sum).sum / (xs.size * (xs.size-1)).toDouble
+        //             }
+        //         }
+        //         (key, n)
+        //     }
+        // })
+        // println("Done calculating local cc.")
+        // // .foreach(println)
 
-        println("Start calculating average cc ...")
-        val average_cc = local_cc.foldLeft((0.0, 0))((acc, value) => (acc._1 + value._2, acc._2 + 1))
-        println(s"Average clustering coefficient: ${average_cc._1/average_cc._2}")
+        // println("Start calculating average cc ...")
+        // val average_cc = local_cc.foldLeft((0.0, 0))((acc, value) => (acc._1 + value._2, acc._2 + 1))
+        // println(s"Average clustering coefficient: ${average_cc._1/average_cc._2}")
 
 
         // val local_cc = neigh.flatMap({
