@@ -1,6 +1,5 @@
 import org.apache.spark._
 import org.apache.spark.sql.SparkSession
-import spire.std.`package`.int
 
 object Task37 {
     def go(): Unit = {
@@ -14,52 +13,59 @@ object Task37 {
 
         val sc = spark.sparkContext
 
-        val rdd = sc.textFile("web-Stanford.txt").filter(x => ! x.startsWith("#")).map(line => line.split("\\s+"))
-        // val rdd = sc.textFile("test-graph.txt")
-        //     .filter(x => ! x.startsWith("#"))
-        //     .map(line => line.split("\\s+"))
+        // Read file, filter commented lines and split
+        val rdd = sc.textFile("web-Stanford.txt")
+            .filter(x => ! x.startsWith("#"))
+            .map(line => line.split("\\s+"))
 
+        // create adjacency rdd, emmit all possible pairs,
+        // then groupByKey and convert values to Set
         val adj_rdd = rdd.flatMap(
-            line => {
-                List((line(0), line(1)), (line(1), line(0)))
-            }
-        ).groupByKey().map(x => (x._1, x._2.toSet))
-
+                line => {
+                    List((line(0), line(1)), (line(1), line(0)))
+                }
+            )
+            .groupByKey()
+            .map(x => (x._1, x._2.toSet))
+        
+        // collect adjacency map locally
+        // this will be used in futher comutations
         val adj = adj_rdd.collectAsMap()
 
-        adj.take(5).foreach(println)
-
-        println("Start calculating local cc ...")
+        // for all vertices pairs (v1,v2) compute
+        // how many common neighbours they have
+        // then compute the clustering coefficient
         val result = adj_rdd.flatMap({
-            case (key, v_set) => {
-                for ( a <- v_set) yield (key, a)
-            }
-        }).map({
-            case (v1, v2) => (v1, adj(v1).intersect(adj(v2)).size)
-        }).reduceByKey({case (v1, v2) => v1+v2})
-        .map({
-            case (key, value) => { 
-                val deg = adj(key).size
-                val cc = if (deg > 1) {
-                    value/(deg * (deg-1)).toDouble
-                } else { 0.0 }
-                (key, cc, deg)
-            }
-        })
+                case (key, v_set) => {
+                    for ( a <- v_set) yield (key, a)
+                }
+            })
+            .map({
+                case (v1, v2) => (v1, adj(v1).intersect(adj(v2)).size)
+            })
+            .reduceByKey({case (v1, v2) => v1+v2})
+            .map({
+                case (key, value) => { 
+                    val deg = adj(key).size
+                    val cc = if (deg > 1) {
+                        // we don't multiply by 2 because be already counted
+                        // the edges twice
+                        value/(deg * (deg-1)).toDouble
+                    } else { 0.0 }
+                    (key, cc, deg)
+                }
+            })
 
-        println("Start calculating average cc ...")
-        val average_cc = result.aggregate((0.0, 0))(
-            (acc, value) => (
-                acc._1 + value._2,
-                acc._2 + 1
-            ),
-            (acc1, acc2) => (
-                acc1._1 + acc2._1,
-                acc1._2 + acc2._2
-            )
-        )
-        // .foldLeft((0.0, 0))((acc, value) => (acc._1 + value._2, acc._2 + 1))
-        println(s"Average clustering coefficient: ${average_cc._1/average_cc._2}")
+        val avg_cc = result.map(x => (x._2, 1))
+            .reduce({
+                case ((value1, count1), (value2, count2)) => {
+                    val count = count1 + count2
+                    (value1 * count1/count + value2* count2/count, count)
+                }
+            })._1
+
+        println(s"Average cc: $avg_cc")
+
     }
 }
 
