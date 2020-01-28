@@ -3,21 +3,17 @@ import org.apache.spark.sql.SparkSession
 
 object Task37 {
     def go(): Unit = {
-
         // Initialize spark
         val spark = SparkSession
             .builder
             .appName("Task36")
             .config("spark.master", "local")
             .getOrCreate()
-
         val sc = spark.sparkContext
-
         // Read file, filter commented lines and split
         val rdd = sc.textFile("web-Stanford.txt")
             .filter(x => ! x.startsWith("#"))
             .map(line => line.split("\\s+"))
-
         // create adjacency rdd, emmit all possible pairs,
         // then groupByKey and convert values to Set
         val adj_rdd = rdd.flatMap(
@@ -27,18 +23,14 @@ object Task37 {
             )
             .groupByKey()
             .map(x => (x._1, x._2.toSet))
-        
         // collect adjacency map locally
         // this will be used in futher comutations
         val adj = adj_rdd.collectAsMap()
-
         // for all vertices pairs (v1,v2) compute
         // how many common neighbours they have
         // then compute the clustering coefficient
         val result = adj_rdd.flatMap({
-                case (key, v_set) => {
-                    for ( a <- v_set) yield (key, a)
-                }
+                case (key, v_set) => for ( a <- v_set) yield (key, a)
             })
             .map({
                 case (v1, v2) => (v1, adj(v1).intersect(adj(v2)).size)
@@ -63,9 +55,7 @@ object Task37 {
                     (value1 * count1/count + value2* count2/count, count)
                 }
             })._1
-
         println(s"Average cc: $avg_cc")
-
     }
 }
 
